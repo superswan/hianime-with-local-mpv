@@ -206,6 +206,17 @@ def get_episode_servers(episode_id):
 
 # --- Testing the server if the server is not offline ---
 def launch_and_monitor_mpv(mpv_command_list):
+    if not config.get("enable_viability_check", True):
+        print("\n--- LAUNCHING VIDEO ---")
+        print("--> Viability check disabled. Handing over control to player.")
+        try:
+            # No stdout capture = mpv owns the terminal and nothing kills it after 20s
+            subprocess.call(mpv_command_list)
+            return True
+        except Exception as e:
+            print(f"--> Failed to launch mpv: {e}")
+            return False
+
     print("\n--- LAUNCHING VIDEO ---"); print("--> Monitoring stream viability (20 second timeout)...")
     try:
         with subprocess.Popen(mpv_command_list, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, encoding='utf-8', errors='replace') as process:

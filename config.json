@@ -1,3 +1,4 @@
 {
-    "enable_jimaku" : true
+  "enable_jimaku" : false,
+  "enable_viability_check" : false
 }

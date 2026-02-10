@@ -4,6 +4,11 @@
 ## Description
 A CLI Python tool for streaming anime from hianime.to—the standout site for its superior soft-subbed episodes—straight into your local MPV player. Unlike other anime platforms, this lets you override them with your own, especially people want to use Japanese originals sub fetched via the Jimaku API. Perfect for people wants a lightweight hianime MPV extension with series pinning, history tracking, and seamless multi-language subtitle swaps.
 
+## Project Status
+This repository is a fork of the original work by dhilzyi: `https://github.com/dhilzyi`.
+The upstream maintainer is moving development to a Go rewrite and plans to archive the Python project. Ongoing updates are in:
+[hianime-cli](https://github.com/dhilzyi/hianime-cli)
+
 ## Disclaimer
 This tool is for educational and personal use only. It demonstrates web scraping and media integration techniques—use responsibly, respect site terms of service, and be mindful of copyrights. I'm not affiliated with any third-party sites or services.
 
@@ -48,13 +53,28 @@ Use `python hianime.py --command` as you can print the raw mpv command for debug
 - Choose servers manually or automatically.
 - Set your directory for downloaded subtitle in variable SUBTITLE_BASE_DIR. It is "F:/Subtitle" as a default.
 - Set your JIMAKU_API_KEY in environment variables.
-- Turn on/off Jimaku in config.json by setting "jimaku_enabled": true. or false.
+- Configure Jimaku and viability checks in `config.json`.
+
+## Configuration
+Configuration lives in `config.json` at the repo root.
+
+Example:
+```json
+{
+  "enable_jimaku": true,
+  "enable_viability_check": true
+}
+```
+
+- `enable_jimaku`: When true, the app will attempt to fetch Japanese subs via the Jimaku API. Requires `JIMAKU_API_KEY` in your environment.
+- `enable_viability_check`: When true, MPV is monitored for 20 seconds after launch. If no viable playback is detected, the process is terminated and the next server is tried. When false, MPV takes over and is not killed after 20 seconds.
 
 ## Troubleshooting
 - Jimaku API issues: Get your key from jimaku.cc and add it to environment variables (e.g. JIMAKU_API_KEY=yourkey) or paste directly in the code.
 - MPV not launching? Ensure it's in your PATH. Test with `mpv --version`
 - If subtitle are not converting. Ensure FFmpeg in your PATH. Test with `ffmpeg -version` or if it's not installed, install first.
 - yt-dlp not detected? Run `yt-dlp --version` to check. If not found, make sure the folder containing `yt-dlp.exe` is in your PATH (you can also put it in the same folder as MPV).
+- Stream plays but gets killed with a viability timeout (e.g. "Timed out. Terminating hung process."): set `"enable_viability_check": false` in `config.json` to let MPV keep control and avoid the 20 second kill.
   
 ## Contributing
 Pull requests welcome! Fork the repo, create a branch, and submit.
